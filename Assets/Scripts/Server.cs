@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Server 
 {
-   private const string apiUrl = "http://localhost:5000/api/Data";
+   private const string apiUrl = "http://unityseclab:5000/api/Data";
    
    private readonly HttpClient _client = new();
 
