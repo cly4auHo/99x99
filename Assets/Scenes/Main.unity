@@ -171,7 +171,9 @@ MonoBehaviour:
   canvas: {fileID: 1854853663}
   minValue: 10
   maxValue: 99
-  delayBetweenExamples: 3
+  exampleAmount: 100
+  winRateToCheck: 95
+  delayBetweenExamples: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Field : MonoBehaviour
 {
     public Action<GameModel, int> Complete;
+    public Action<string> Feedback;
     public Action NeedUpdate;
     
     [SerializeField] private GameObject gameField;
@@ -19,6 +20,10 @@ public class Field : MonoBehaviour
     [SerializeField] private GameObject statisticPanel;
     [SerializeField] private TextMeshProUGUI winRate;
     [SerializeField] private TextMeshProUGUI avgTime;
+    
+    [Header("Feedback")]
+    [SerializeField] private GameObject feedbackPanel;
+    [SerializeField] private TMP_InputField feedbackField;
     
     private GameModel gameModel;
     private bool check;
@@ -51,15 +56,24 @@ public class Field : MonoBehaviour
         winRate.text = $"Win Rate: {win}%";
         avgTime.text = $"Average Time: {time}s";
     }
+
+    public void ShowFeedback()
+    {
+        feedbackPanel.SetActive(true);
+        gameField.SetActive(false);
+        statisticPanel.SetActive(false);
+        statisticButton.gameObject.SetActive(false);
+    }
     
     private void Start()
     {
         button.onClick.AddListener(OnClick);
+        feedbackField.onEndEdit.AddListener(SendFeedback);
         statisticButton.Hold += OnHold;
         statisticButton.Release += OnRelease;
         SetState(true);
     }
-
+    
     private void SetState(in bool state)
     {
         gameField.SetActive(state);
@@ -75,6 +89,14 @@ public class Field : MonoBehaviour
         Complete?.Invoke(gameModel, int.TryParse(inputField.text, out var answer) ? answer : -1);
     }
 
+    private void SendFeedback(string text)
+    {
+        SetState(true);
+        statisticButton.gameObject.SetActive(true);
+        feedbackPanel.SetActive(false);
+        Feedback?.Invoke(text);
+    }
+    
     private void OnHold()
     {
         SetState(false);
@@ -92,5 +114,14 @@ public class Field : MonoBehaviour
     {
         if (button)
             button.onClick.RemoveListener(OnClick);
+        
+        if (feedbackField)
+            feedbackField.onEndEdit.RemoveListener(SendFeedback);
+
+        if (statisticButton)
+        {
+            statisticButton.Hold -= OnHold;
+            statisticButton.Release -= OnRelease;
+        } 
     }
 }
